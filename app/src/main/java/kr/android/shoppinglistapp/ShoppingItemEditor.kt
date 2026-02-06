@@ -138,11 +138,13 @@ fun ShoppingItemEditor(
                 Button(
                     onClick = {
                         val qty = editedQuantity.toIntOrNull() ?: return@Button
-                        if (qty <= 0) return@Button
+
+                        if (editedName.isBlank() || qty <= 0) return@Button
 
                         onSave(editedName, qty)
                     },
-                    enabled = editedQuantity.toIntOrNull()?.let { it > 0 } == true,
+                    enabled = editedName.isNotBlank() &&
+                            (editedQuantity.toIntOrNull()?.let { it > 0 } == true),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = PrimaryButton,
                         contentColor = Color.White,
