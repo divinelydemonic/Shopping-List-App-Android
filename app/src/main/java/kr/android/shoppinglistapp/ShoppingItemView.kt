@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -62,8 +62,8 @@ fun ShoppingItemView(
                 //item serial number
                 Box(
                     modifier = Modifier
-                        .size(25.dp)
-                        .padding(end = 10.dp)
+                        .defaultMinSize(minWidth = 28.dp, minHeight = 28.dp)
+                        .padding(horizontal = 6.dp)
                         .background(EditBlue.copy(alpha = .1f), CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
