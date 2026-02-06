@@ -31,7 +31,7 @@ The app allows users to add, edit, and delete shopping items with a clean UI and
 ## 🗂️ Project Structure
 
 ```
-kush.android.shoppinglistapp
+kr.android.shoppinglistapp
 │
 ├── MainActivity.kt
 ├── ShoppingList.kt
