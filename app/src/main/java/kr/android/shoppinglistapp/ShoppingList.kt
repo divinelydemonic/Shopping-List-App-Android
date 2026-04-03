@@ -1,17 +1,20 @@
 package kr.android.shoppinglistapp
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -19,11 +22,17 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import kr.android.shoppinglistapp.ui.theme.*
 
 //home screen and shopping list logic
 @Composable
-fun ShoppingList(modifier: Modifier)
+fun ShoppingList(
+    viewModel: LocationViewModel,
+    navController: NavController,
+    context: Context,
+    locationUtils: LocationUtils
+)
 {
 
     //shopping list
@@ -39,25 +48,78 @@ fun ShoppingList(modifier: Modifier)
     //id generation
     var nextId by remember { mutableStateOf(0) }
 
+
     //parent column
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .background(color = ScreenBg),
         horizontalAlignment = Alignment.CenterHorizontally
     )
     {
 
-        //app title
-        Text(
-            "Shopping List 💸",
-            fontSize = 40.sp,
-            fontFamily = FontFamily.SansSerif,
-            fontWeight = FontWeight.Bold,
-            color = TitleText,
-            modifier = Modifier.padding(top = 16.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
 
-        Spacer(Modifier.height(20.dp))
+            //app title
+            Text(
+                "The Shopping List",
+                fontSize = 30.sp,
+                fontFamily = FontFamily.SansSerif,
+                fontWeight = FontWeight.Bold,
+                color = TitleText
+            )
+
+            //change location icon button
+            IconButton(
+                onClick = {
+                    locationUtils.requestLocationUpdates(viewModel)
+                    navController.navigate("locationDialog") {
+                        this.launchSingleTop
+                    }
+                },
+                modifier = Modifier.padding(end = 4.dp),
+                colors = IconButtonDefaults.iconButtonColors(
+                    contentColor = Color.Black
+                )
+            ) {
+                Icon(
+                    modifier = Modifier.size(32.dp),
+                    imageVector = Icons.Default.LocationOn,
+                    contentDescription = "change location",
+                    tint = Purple40
+                )
+            }
+        }
+
+        Spacer(Modifier.height(10.dp))
+
+        if (viewModel.address.value.isNotEmpty()) {
+            Box(
+                modifier = Modifier.padding(horizontal = 16.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        "Address: ",
+                        fontWeight = FontWeight.Bold,
+                        color = EmptyText
+                    )
+                    Text(
+                        text = viewModel.address.value.firstOrNull()?.formatted_address ?: "No address found!",
+                        color = EmptyText
+                    )
+                }
+            }
+        }
+
+        Spacer(Modifier.height(32.dp))
 
         //add item button
         Button(
@@ -71,16 +133,14 @@ fun ShoppingList(modifier: Modifier)
                 contentColor = Color.White
             ),
             modifier = Modifier
-                .padding(4.dp)
-                .height(48.dp)
+                .padding(2.dp)
+                .height(40.dp)
         ) {
             Text(
                 "Add Item",
-                fontSize = 16.sp
+                fontSize = 15.sp
             )
         }
-
-//        Spacer(Modifier.height(240.dp))
 
         if (shoppingItems.isEmpty()) {
             Box(
@@ -166,7 +226,8 @@ fun ShoppingList(modifier: Modifier)
                 title = {
                     Text(
                         "Add Shopping Item",
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
                     )
                 },
                 text = {
@@ -189,7 +250,9 @@ fun ShoppingList(modifier: Modifier)
                                 focusedBorderColor = RowBorder,
                                 unfocusedBorderColor = RowBorder.copy(alpha = .5f),
                                 focusedLabelColor = TitleText,
-                                unfocusedLabelColor = BodyText
+                                unfocusedLabelColor = BodyText,
+                                focusedTextColor = Color.Black,
+                                unfocusedTextColor = Color.Black
                             )
                         )
                         Text(
@@ -208,6 +271,9 @@ fun ShoppingList(modifier: Modifier)
                                     .filter { it.isDigit() }
                                     .take(3)
                             },
+                            textStyle = TextStyle(
+                                color = Color.Black
+                            ),
                             label = {
                                 Text("Item Quantity")
                             },
@@ -220,7 +286,9 @@ fun ShoppingList(modifier: Modifier)
                                 focusedBorderColor = RowBorder,
                                 unfocusedBorderColor = RowBorder.copy(alpha = .5f),
                                 focusedLabelColor = TitleText,
-                                unfocusedLabelColor = BodyText
+                                unfocusedLabelColor = BodyText,
+                                focusedTextColor = Color.Black,
+                                unfocusedTextColor = Color.Black
                             )
                         )
                         Text(

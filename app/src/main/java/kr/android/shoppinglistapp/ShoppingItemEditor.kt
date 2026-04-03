@@ -75,7 +75,8 @@ fun ShoppingItemEditor(
                     Text(
                         "Name:",
                         fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
+                        fontSize = 20.sp,
+                        color = Color.Black
                     )
 
                     BasicTextField(
@@ -107,7 +108,8 @@ fun ShoppingItemEditor(
                     Text(
                         "Qty:",
                         fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
+                        fontSize = 20.sp,
+                        color = Color.Black
                     )
 
                     BasicTextField(
