@@ -1,129 +1,194 @@
+# 🛒 Shopping List App (Location-Aware)
 
-# 🛒 Shopping List App (Jetpack Compose)
-
-A modern Android Shopping List application built using Jetpack Compose and Material 3.  
-The app allows users to add, edit, and delete shopping items with a clean UI and smooth state-driven updates.
+> A modern Android app that lets users manage their shopping list with real-time location awareness and map-based selection.
 
 ---
 
-## 📸 App Demo
-<h2>App Landing Page</h2>
-<img src="snapshots/1.png" height="400"></img>
+## 📱 App Overview
 
-<h2>App Input taking and handling "Add" process</h2>
-<p>
-<img src="snapshots/2.png" height="400"></img>
-<img src="snapshots/3-a.png" height="400"></img>
-<img src="snapshots/4-b.png" height="400"></img>
-<img src="snapshots/3-b.png" height="400"></img>
-</p>
+This app helps users create and manage a shopping list while being aware of their current or selected location.
 
-<h2>Editing the list items</h2>
-<p>
-<img src="snapshots/5-a.png" height="400"></img>
-<img src="snapshots/5-b.png" height="400"></img>
-<img src="snapshots/5-c.png" height="400"></img>
-</p>
+### 💡 Problem it solves
+- Users often shop at different locations and need contextual awareness.
+- This app allows:
+  - 📍 Automatic location detection
+  - 🗺️ Manual location selection via map
+  - 🛒 Organized shopping list management
 
-<h2>Deleting item</h2>
-<img src="snapshots/6.png" height="400"></img>
-
-<h2>Scrollable list</h2>
-<p>
-<img src="snapshots/7-a.png" height="400"></img>
-<img src="snapshots/7-b.png" height="400"></img>
-</p>
 ---
 
 ## ✨ Features
 
-- Add shopping items with name and quantity  
-- Edit existing items inline  
-- Delete items from the list  
-- Auto-generated serial numbers  
-- Friendly empty-state UI  
-- Custom color palette with Material 3  
-- Fully built using Jetpack Compose  
-- State management using Compose APIs  
+- 📍 Real-time location tracking (Fused Location Provider)
+- 🗺️ Select location manually using Google Maps
+- 🌐 Reverse geocoding (coordinates → address)
+- 🛒 Add, edit, and delete shopping items
+- ✏️ Inline item editing (no screen switching)
+- 🔐 Smart permission handling with rationale & settings redirect
+- 🎯 Clean and responsive UI (Jetpack Compose)
+- ⚡ Input validation (name & quantity)
+- 📜 LazyColumn for efficient list rendering
 
 ---
 
-## 🧩 Tech Stack
+## 🛠 Tech Stack
 
-- Language: Kotlin  
-- UI Framework: Jetpack Compose  
-- Design System: Material 3  
-- Architecture: Single Activity + Composables  
-- State Management: remember, mutableStateOf, mutableStateListOf  
+### 🧑‍💻 Languages & Frameworks
+- Kotlin
+- Jetpack Compose
+
+### 🏗 Architecture
+- MVVM (Model-View-ViewModel)
+
+### 📦 Libraries & Tools
+- Retrofit (API calls)
+- Gson Converter
+- Google Maps Compose
+- Fused Location Provider (Google Play Services)
+- Navigation Compose
 
 ---
 
-## 🗂️ Project Structure
+## 🏗 Architecture
 
+This project follows a MVVM architecture with clear separation of concerns.
+### 🔄 Data Flow
+
+```mermaid
+graph TD
+    UI[Compose UI] --> VM[ViewModel]
+    VM --> Data[Data Layer]
+    Data --> API[Geocoding API]
+    Data --> Location[Location Utils]
+    API --> Data
+    Location --> Data
+    Data --> VM
+    VM --> UI
 ```
-kr.android.shoppinglistapp
+
+### 📌 Explanation
+- UI (Compose) → Displays state
+- ViewModel → Holds state & business logic
+- LocationUtils → Handles GPS updates
+- RetrofitClient → Handles API calls
+
+---
+
+## 🔄 App Flow
+
+1. App launches → Requests location permission  
+2. If granted:
+   - 📍 Fetches user’s current location  
+   - 🌐 Converts coordinates → address  
+3. If address not available:
+   - 🗺️ Opens map dialog for manual selection  
+4. User:
+   - Adds items ➕  
+   - Edits items ✏️  
+   - Deletes items 🗑️  
+5. Location can be updated anytime via map icon  
+
+---
+
+## 📸  Demo Video
+[Demo video link here ]
+
+---
+
+## 🌐 API Integration
+
+### 🔗 API Used
+- Google Geocoding API
+
+### 📌 Purpose
+- Convert latitude & longitude → human-readable address
+
+### 🔄 How it works
+@GET("maps/api/geocode/json")
+suspend fun getAddressFromCoordinates(...)
+
+### ⚠️ Error Handling
+- Try-catch in ViewModel
+- Safe null handling in UI
+- Optional fallback using Android Geocoder
+
+---
+
+## 📂 Project Structure
+
+```bash
+kr.android.shoppinglistapp/
 │
 ├── MainActivity.kt
-├── ShoppingList.kt
-├── ShoppingItemView.kt
-├── ShoppingItemEditor.kt
-├── ShoppingListClass.kt
+├── Navigation.kt
 │
-└── ui.theme
-    ├── Color.kt
-    ├── Theme.kt
-    └── Type.kt
+├── location/
+│   ├── LocationUtils.kt
+│   ├── LocationViewModel.kt
+│   ├── LocationPermissionHandler.kt
+│   ├── LocationSelectionDialog.kt
+│
+├── api/
+│   ├── GeocodingAPIService.kt
+│   ├── RetrofitClient.kt
+│   ├── LocationData.kt
+│
+├── ui/
+│   ├── ShoppingList.kt
+│   ├── ShoppingItemView.kt
+│   ├── ShoppingItemEditor.kt
+│
+├── model/
+│   └── ShoppingListClass.kt
 ```
+---
+
+## 🎯 Use Cases
+
+- 🛒 Daily grocery management
+- 📍 Tracking shopping based on location
+- 🧭 Selecting store-specific shopping lists
+- ✍️ Quick list editing on the go
 
 ---
 
-## 🧠 App Logic Overview
+## 🚧 Future Improvements
 
-### Adding Items
-- Uses a custom AlertDialog
-- Input validation for name and quantity
-- Automatically generates unique item IDs
-
-### Editing Items
-- Inline editor replaces the item card
-- Only one item can be edited at a time
-- Save and cancel actions supported
-
-### State Handling
-- Items stored in a mutableStateListOf
-- UI updates automatically on state changes
-- isEditing flag controls edit/view mode
+- 💾 Room Database (offline persistence)
+- ☁️ Cloud sync (Firebase)
+- 🔍 Search & filtering
+- 📊 Category-based grouping
+- 🧠 Smart suggestions based on location
+- 🌙 Dark mode enhancements
+- ⚙️ Dependency Injection (Hilt)
 
 ---
 
-## 🎨 UI & Design Highlights
+## 💼 Portfolio Note
 
-- Soft pastel background for readability  
-- Card-based list items with elevation  
-- Color-coded actions:
-  - Edit
-  - Delete
-- Responsive layout using LazyColumn  
-- Clean empty-state messaging  
+This project is part of my Android development portfolio.
 
----
-
-## 📌 Requirements
-
-- Android Studio Hedgehog or newer  
-- Kotlin 1.9+  
-- Minimum SDK: 24  
+I am open to:
+- 📱 Freelance Android development
+- 💼 Internship opportunities
+- 🤝 Collaboration on real-world apps
 
 ---
 
-## 📈 Future Improvements
+## ⭐ Show your support
 
-- Persistent storage (Room / DataStore)
-- Swipe-to-delete gestures
-- Item categories
-- Dark mode support
-- Animations with Compose APIs
+If you like this project:
+- ⭐ Star the repo
+- 🍴 Fork it
+- 📢 Share it
 
 ---
 
-⭐ If you like this project, feel free to star the repository!
+## 📬 Contact
+
+Feel free to connect with me on:
+- LinkedIn
+- GitHub
+- X (Twitter)
+
+---
