@@ -40,6 +40,7 @@ fun Navigation(
             )
         }
 
+        //location selection dialog
         dialog(
             route = "locationDialog"
         ) {
@@ -52,6 +53,7 @@ fun Navigation(
                 LocationSelectionDialog(
                     location = startLocation,
                     onLocationSelected = { locationData ->
+
                         // Save the choice so it stays there next time the map opens!
                         viewModel.saveManualLocation(locationData)
 

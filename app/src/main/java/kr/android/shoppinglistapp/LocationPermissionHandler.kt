@@ -44,10 +44,12 @@ fun LocationPermissionHandler(
     var openedSettings by remember { mutableStateOf(false) }
 
 
+    //permission launcher for requesting permissions
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
 
+        //checks if all the asked permissions are granted (all are true)
         val granted = permissions.values.all { it }
 
         if (granted) {
@@ -56,8 +58,10 @@ fun LocationPermissionHandler(
             permissionDenialCount++
 
             if (permissionDenialCount == 1) {
+                //if user denies only once, the rationale is shown
                 showRationale = true
             } else {
+                //if the user denies twice or permanently, the app exits
                 activity.finish()
             }
         }
@@ -66,6 +70,7 @@ fun LocationPermissionHandler(
     // Only run once
     LaunchedEffect(Unit) {
         if (!permissionGranted) {
+            //launches the permission launcher
             permissionLauncher.launch(
                 arrayOf(
                     Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -107,6 +112,7 @@ fun LocationPermissionHandler(
     }
 
     when {
+
         permissionGranted -> {
             LaunchedEffect(Unit) {
             locationUtils.requestLocationUpdates(viewModel)
@@ -114,7 +120,6 @@ fun LocationPermissionHandler(
                     navController.navigate("locationDialog")
                 }
             }
-
             content()
         }
 
@@ -122,9 +127,7 @@ fun LocationPermissionHandler(
             AlertDialog(
                 onDismissRequest = {},
                 title = { Text("Location Permission Required") },
-                text = {
-                    Text("Please enable location permission from settings")
-                },
+                text = { Text("Please enable location permission from settings") },
                 confirmButton = {
                     Row(
                         modifier = Modifier

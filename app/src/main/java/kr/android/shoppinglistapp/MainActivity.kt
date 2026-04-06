@@ -30,11 +30,14 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier
                     .background(ScreenBg)
                     .fillMaxSize()) { innerPadding ->
+
+                    //entry checkpoint
                     LocationPermissionHandler(
                         viewModel = viewModel,
                         locationUtils = locationUtils,
                         navController = navController
                     ) {
+                        //composable content only accessible if permission is given
                         Navigation(
                             modifier = Modifier.padding(innerPadding),
                             viewModel = viewModel,
